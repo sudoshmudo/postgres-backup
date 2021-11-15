@@ -8,7 +8,7 @@ export DATABASE_NAME="${DATABASE_URL##*/}"
 echo "Creating backup of $DATABASE_NAME database..."
 pg_dump --format=custom -d $DATABASE_URL > db.dump
 
-s3_uri_base="s3://${S3_BUCKET}/${DATABASE_NAME}.dump"
+s3_uri_base="s3://${AWS_S3_BUCKET}/${DATABASE_NAME}.dump"
 
 echo "Encrypting backup..."
 gpg --symmetric --batch --passphrase "$PASSPHRASE" db.dump
