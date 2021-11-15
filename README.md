@@ -5,30 +5,33 @@ This project provides Docker images to periodically back up a PostgreSQL databas
 ## Backup
 ```yaml
 postgres:
-  image: postgres:13
+  image: postgres:12
   environment:
     POSTGRES_USER: user
     POSTGRES_PASSWORD: password
 
-pg_backup_s3:
-  image: eeshugerman/postgres-backup-s3:13
-  environment:
-    SCHEDULE: '@weekly'
-    PASSPHRASE: passphrase
-    S3_REGION: region
-    S3_ACCESS_KEY_ID: key
-    S3_SECRET_ACCESS_KEY: secret
-    S3_BUCKET: my-bucket
-    S3_PREFIX: backup
-    POSTGRES_HOST: postgres
-    POSTGRES_DATABASE: dbname
-    POSTGRES_USER: user
-    POSTGRES_PASSWORD: password
+  postgres-backup:
+    image: ghcr.io/sudoshmudo/postgres-backup:latest
+    environment:
+      - DATABASE_URL
+      - PASSPHRASE
+      - S3_ACCESS_KEY_ID
+      - S3_BUCKET
+      - S3_REGION
+      - S3_SECRET_ACCESS_KEY
+      - SCHEDULE
+    depends_on:
+      - postgres
 ```
-- Images are tagged by the major PostgreSQL version they support: `9`, `10`, `11`, `12`, or `13`.
+- Image is built for version `12`.
+- Suitable for Raspberry and ARM architecture.
 - The `SCHEDULE` variable determines backup frequency. See go-cron schedules documentation [here](http://godoc.org/github.com/robfig/cron#hdr-Predefined_schedules).
-- If `PASSPHRASE` is provided, the backup will be encrypted using GPG.
+- `DATABASE_URL` is in format: postgresql://username:password@postgres_host:5432/database_name
+- `PASSPHRASE` is used to encrypt file using GPG.
 - Run `docker exec <container name> sh backup.sh` to trigger a backup ad-hoc
+- All of the variables in the example must be defined
+- Filename is in format: database_name.gpg (it gets overwritten each time)
+- It is highly recommended to set versioning on the bucket
 
 ## Restore
 > **WARNING:** DATA LOSS! All database objects will be dropped and re-created.
@@ -43,20 +46,4 @@ docker exec <container name> sh restore.sh <timestamp>
 ```
 
 # Acknowledgements
-This project is a fork and re-structuring of @schickling's [postgres-backup-s3](https://github.com/schickling/dockerfiles/tree/master/postgres-backup-s3) and [postgres-restore-s3](https://github.com/schickling/dockerfiles/tree/master/postgres-restore-s3).
-
-## Fork goals
-  - [x] dedicated repository
-  - [x] automated builds
-  - [x] support multiple PostgreSQL versions
-  - [x] backup and restore with one image
-  - [x] support encrypted (password-protected) backups
-  - [x] option to restore from specific backup by timestamp
-
-## Other changes
-  - uses `pg_dump`'s `custom` format (see [docs](https://www.postgresql.org/docs/10/app-pgdump.html))
-  - doesn't use Python 2
-  - backup blobs and all schemas by default
-  - drop and re-create all database objects on restore
-  - some env vars renamed or removed
-  - filter backups on S3 by database name
+This project is a fork of [postgres-backup-s3](https://github.com/eeshugerman/postgres-backup-s3).
