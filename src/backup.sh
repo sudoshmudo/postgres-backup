@@ -43,13 +43,6 @@ if [ -z "$POSTGRES_PASSWORD" ]; then
   exit 1
 fi
 
-if [ -z "$S3_ENDPOINT" ]; then
-  aws_args=""
-else
-  aws_args="--endpoint-url $S3_ENDPOINT"
-fi
-
-
 export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$S3_REGION
@@ -78,7 +71,7 @@ else
 fi
 
 echo "Uploading backup to $S3_BUCKET..."
-aws $aws_args s3 cp "$local_file" "$s3_uri"
+aws s3 cp "$local_file" "$s3_uri"
 rm "$local_file"
 
 echo "Backup complete."

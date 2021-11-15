@@ -39,13 +39,6 @@ if [ -z "$POSTGRES_PASSWORD" ]; then
   exit 1
 fi
 
-if [ -z "$S3_ENDPOINT" ]; then
-  aws_args=""
-else
-  aws_args="--endpoint-url $S3_ENDPOINT"
-fi
-
-
 export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$S3_REGION
@@ -64,7 +57,7 @@ if [ $# -eq 1 ]; then
 else
   echo "Finding latest backup..."
   key_suffix=$(
-    aws $aws_args s3 ls "${s3_uri_base}/${POSTGRES_DATABASE}" \
+    aws s3 ls "${s3_uri_base}/${POSTGRES_DATABASE}" \
       | sort \
       | tail -n 1 \
       | awk '{ print $4 }'
@@ -72,7 +65,7 @@ else
 fi
 
 echo "Fetching backup from S3..."
-aws $aws_args s3 cp "${s3_uri_base}/${key_suffix}" "db${file_type}"
+aws s3 cp "${s3_uri_base}/${key_suffix}" "db${file_type}"
 
 if [ -n "$PASSPHRASE" ]; then
   echo "Decrypting backup..."
