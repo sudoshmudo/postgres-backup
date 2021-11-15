@@ -15,10 +15,10 @@ postgres:
     environment:
       - DATABASE_URL
       - PASSPHRASE
-      - S3_ACCESS_KEY_ID
-      - S3_BUCKET
-      - S3_REGION
-      - S3_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID
+      - AWS_DEFAULT_REGION
+      - AWS_S3_BUCKET
+      - AWS_SECRET_ACCESS_KEY
       - SCHEDULE
     depends_on:
       - postgres
@@ -26,7 +26,7 @@ postgres:
 - Image is built for version `12`.
 - Suitable for Raspberry and ARM architecture.
 - The `SCHEDULE` variable determines backup frequency. See go-cron schedules documentation [here](http://godoc.org/github.com/robfig/cron#hdr-Predefined_schedules).
-- `DATABASE_URL` is in format: postgresql://username:password@postgres_host:5432/database_name
+- `DATABASE_URL` is in format: postgresql://username:password@postgres:5432/database_name
 - `PASSPHRASE` is used to encrypt file using GPG.
 - Run `docker exec <container name> sh backup.sh` to trigger a backup ad-hoc
 - All of the variables in the example must be defined
