@@ -10,6 +10,5 @@ RUN sh install.sh && rm install.sh
 ADD src/run.sh run.sh
 ADD src/backup.sh backup.sh
 ADD src/restore.sh restore.sh
-ADD src/cron-template cron-template
 
 CMD ["sh", "run.sh"]
