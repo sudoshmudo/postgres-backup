@@ -1,4 +1,8 @@
-FROM alpine:3.12
+FROM alpine:3.13
+
+RUN apk add --update php py-pip mysql-client \
+    && pip install awscli \
+    && rm -rf /var/cache/apk/*
 
 ADD src/install.sh install.sh
 RUN sh install.sh && rm install.sh
@@ -6,5 +10,6 @@ RUN sh install.sh && rm install.sh
 ADD src/run.sh run.sh
 ADD src/backup.sh backup.sh
 ADD src/restore.sh restore.sh
+ADD src/cron-template cron-template
 
 CMD ["sh", "run.sh"]
