@@ -7,4 +7,7 @@ touch crontab.tmp \
     && crontab crontab.tmp \
     && rm -rf crontab.tmp
 
-/usr/sbin/crond -f -d 0
+
+touch /tmp/tmp_log.log
+
+/usr/sbin/crond -f -L /tmp/tmp_log.log -d 0

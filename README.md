@@ -1,5 +1,6 @@
 # Introduction
 This project provides Docker images to periodically back up a PostgreSQL database to AWS S3, and to restore from the backup as needed.
+Logs are intentionally surpressed to avoid log pollution.
 
 # Usage
 ## Backup
@@ -43,6 +44,12 @@ docker exec <container name> sh restore.sh
 ### ... from specific backup
 ```sh
 docker exec <container name> sh restore.sh <timestamp>
+```
+
+## Testing and development
+
+```sh
+sudo docker-compose build && sudo docker-compose up --force-recreate
 ```
 
 # Acknowledgements
