@@ -1,8 +1,7 @@
 FROM postgres:17.2-alpine
 
 RUN apk add --update php py-pip mysql-client \
-    && apk add pipx \
-    && pipx install awscli \
+    && apk add --no-cache aws-cli \
     && rm -rf /var/cache/apk/*
 
 ADD src/install.sh install.sh
