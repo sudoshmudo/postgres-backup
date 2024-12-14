@@ -1,7 +1,8 @@
-FROM alpine:3.18
+FROM postgres:17.2-alpine
 
 RUN apk add --update php py-pip mysql-client \
-    && pip install awscli \
+    && apk add pipx \
+    && pipx install awscli \
     && rm -rf /var/cache/apk/*
 
 ADD src/install.sh install.sh

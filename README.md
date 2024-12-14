@@ -49,7 +49,7 @@ docker exec <container name> sh restore.sh <timestamp>
 ## Testing and development
 
 ```sh
-sudo docker-compose build && sudo docker-compose up --force-recreate
+docker compose build && docker compose up --force-recreate
 ```
 
 # Acknowledgements
